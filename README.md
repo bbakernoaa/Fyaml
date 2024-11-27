@@ -54,7 +54,7 @@ end program
 ```
 
 ## Project Structure
-```
+```text
 .
 ├── CMakeLists.txt
 ├── src/
@@ -70,15 +70,14 @@ end program
 
 ## Testing
 ```bash
-cd build
-ctest --output-on-failure
+ctest --test-dir build/tests --output-on-failure
 ```
 
 ## Documentation
 Documentation is generated using FORD. To build:
 
 ```bash
-ford .ford
+ford docs.md
 ```
 
 ## License

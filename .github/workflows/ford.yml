@@ -8,28 +8,25 @@ on:
 
 jobs:
   documentation:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     permissions:
       contents: write
     strategy:
       fail-fast: false
-      matrix:
-        os: [ubuntu-latest]
-        python-version: [3.12]
 
     steps:
     - name: Checkout Code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         submodules: recursive
 
     - name: Install Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
-        python-version: ${{ matrix.python-version }}
+        python-version: "3.12"
 
     - name: Setup Graphviz
-      uses: ts-graphviz/setup-graphviz@v1
+      uses: ts-graphviz/setup-graphviz@v2
 
     - name: Install FORD
       if: contains( matrix.os, 'ubuntu')
@@ -39,7 +36,7 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
     - name: Build FORD Documentation
-      run: ford ./ford.yml
+      run: ford ./docs.md
 
     - name: Deploy Documentation
       uses: JamesIves/github-pages-deploy-action@v4

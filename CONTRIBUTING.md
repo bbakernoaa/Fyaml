@@ -12,6 +12,11 @@ cd fyaml
 
 2. Set up development environment:
 ```bash
+pre-commit install
+```
+
+3. Configure and build the project:
+```bash
 mkdir build && cd build
 cmake -DCMAKE_BUILD_TYPE=Debug ..
 make
@@ -39,8 +44,7 @@ git checkout -b feature/your-feature-name
 4. Update documentation as needed
 5. Run the test suite:
 ```bash
-cd build
-ctest --output-on-failure
+ctest --test-dir build/tests --output-on-failure
 ```
 
 ### Submit a Pull Request with:

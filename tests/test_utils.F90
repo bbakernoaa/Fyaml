@@ -22,7 +22,7 @@ contains
         if (expected /= actual) then
             print *, 'FAILED: ', message
             print *, 'Expected: ', expected, ' Got: ', actual
-            stop
+            error stop
         end if
     end subroutine
 
@@ -36,7 +36,7 @@ contains
         if (abs(expected - actual) > tol) then
             print *, 'FAILED: ', message
             print *, 'Expected: ', expected, ' Got: ', actual
-            stop
+            error stop
         end if
     end subroutine
 
@@ -46,7 +46,7 @@ contains
         if (expected .neqv. actual) then
             print *, 'FAILED: ', message
             print *, 'Expected: ', expected, ' Got: ', actual
-            stop
+            error stop
         end if
     end subroutine
 
@@ -85,14 +85,14 @@ contains
         call allocate_string_value(exp_val, expected, status)
         if (status /= 0) then
             print *, 'FAILED: Memory allocation error for expected value'
-            stop
+            error stop
         endif
 
         call allocate_string_value(act_val, actual, status)
         if (status /= 0) then
             print *, 'FAILED: Memory allocation error for actual value'
             if (allocated(exp_val)) deallocate(exp_val)
-            stop
+            error stop
         endif
 
         if (exp_val /= act_val) then
@@ -100,7 +100,7 @@ contains
             print *, 'Expected: ', trim(exp_val), ' Got: ', trim(act_val)
             if (allocated(exp_val)) deallocate(exp_val)
             if (allocated(act_val)) deallocate(act_val)
-            stop
+            error stop
         endif
 
         if (allocated(exp_val)) deallocate(exp_val)
@@ -110,6 +110,7 @@ contains
     subroutine test_basic_types()
         type(fyaml_doc) :: doc
         type(yaml_value) :: val
+        type(yaml_dict) :: company
         character(len=:), allocatable :: key
         integer :: status
 
@@ -122,39 +123,44 @@ contains
 
         call doc%load("test_example.yaml")
 
-        ! Test person.name
-        key = "person"
+        key = "company"
         val = doc%root%get(key)
         if (.not. associated(val%dict_val)) then
-            write(error_unit,*) "Failed to get person dictionary"
-            goto 100  ! Cleanup
+            write(error_unit,*) "Failed to get company dictionary"
+            error stop
         endif
+        company = val%dict_val
+        print *, company%keys()
 
         key = "name"
-        val = val%get(key)
+        val = company%get(key)
+        print *, val%value_type
         if (.not. allocated(val%str_val)) then
-            write(error_unit,*) "String value not allocated"
-            goto 100
+            write(error_unit,*) "String value .name not allocated"
+            error stop
         endif
-        call assert_equal("Jane Doe", val%str_val, "String value test")
+        call assert_equal("Example Corp", val%str_val, "String value test")
 
-        key = "age"
-        val = val%get(key)
-        call assert_equal(25, val%int_val, "Integer value test")
+        key = "founded"
+        val = company%get(key)
+        call assert_equal(2001, val%int_val, "Integer value test")
 
-        key = "height"
-        val = val%get(key)
-        call assert_equal(5.7, val%real_val, "Real value test")
+        key = "employees"
+        val = company%get(key)
+        call assert_equal(150, val%int_val, "Integer value test")
 
-        key = "married"
-        val = val%get(key)
-        call assert_equal(.false., val%bool_val, "Boolean value test")
+        key = "pi"
+        val = company%get(key)
+        call assert_equal(3.14159, val%real_val, "Real value test")
 
-        key = "null_value"
-        val = val%get(key)
+        key = "okay"
+        val = company%get(key)
+        call assert_equal(.true., val%bool_val, "Boolean value test")
+
+        key = "goodness"
+        val = company%get(key)
         call assert_equal(.true., val%is_null, "Null value test")
 
-        100 continue  ! Cleanup
         if (allocated(key)) deallocate(key)
     end subroutine
 
@@ -208,7 +214,6 @@ contains
         val = doc%root%get(key)
         call assert_equal(25, val%int_val, "Nested integer test")
 
-        100 continue
         if (allocated(key)) deallocate(key)
     end subroutine
 
@@ -217,7 +222,6 @@ contains
         type(yaml_dict), pointer :: dict
         type(yaml_value) :: val
         character(len=:), allocatable, dimension(:) :: keys
-        character(len=20) :: key
 
         call doc%load("test_example.yaml")
 
@@ -230,6 +234,7 @@ contains
 
             ! Test dictionary operations
             call assert_equal(4, size(keys), "Number of keys in person")
+
             ! Additional assertions for specific keys can be added here
         end if
     end subroutine

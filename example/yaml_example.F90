@@ -1,23 +1,35 @@
 program test_fyaml
-      use fyaml
-      implicit none
+    use fyaml
+    implicit none
 
-      type(yaml_document) :: doc
-      type(yaml_value) :: val
-      character(len=:), allocatable, dimension(:) :: keys
+    type(fyaml_doc) :: doc
+    type(yaml_value) :: val, person
+    logical :: success
+    character(len=:), allocatable, dimension(:) :: keys
+    character(len=*), parameter :: source_dir = SOURCE_DIR  ! macro
+    character(len=*), parameter :: filename = source_dir //"/"//"example.yaml"
 
-      call doc%load("example.yaml")
+    success = .false.
+    print "('Loading file:', x, a)", filename
+    call doc%load(filename, success)
+    if (.not. success) then
+      write(error_unit,*) 'Error: Failed to load YAML file'
+      error stop
+    end if
 
-      ! Get all person keys
-      keys = doc%root%get("person")%keys()
+    ! Get all person keys
+    person = doc%root%get("person")
+    keys = person%dict_val%keys()
+    print *, "Keys:", keys
 
-      ! Get specific values
-      val = doc%root%get("person")%get("name")
-      print *, "Name:", val%str_val
+    ! Get specific values
+    val = person%get("name")
+    print *, "Name:", val%str_val
 
-      val = doc%root%get("person")%get("age")
-      print *, "Age:", val%int_val
+    val = person%get("age")
+    print *, "Age:", val%int_val
 
-      val = doc%root%get("person")%get("skills")
-      print *, "Skills:", val%sequence
-  end program test_fyaml
+    val = person%get("skills")
+    print *, "Skills:", val%sequence
+
+end program test_fyaml

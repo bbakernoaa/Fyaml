@@ -47,7 +47,7 @@ make -j$(sysctl -n hw.ncpu)
 
 # Run tests
 echo "Running tests..."
-ctest --output-on-failure
+ctest --test-dir tests --output-on-failure
 
 # Return to original directory
 cd ..

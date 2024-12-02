@@ -1,3 +1,4 @@
+---
 project: Fyaml
 version: 0.1.0
 year: 2024
@@ -20,10 +21,11 @@ display: public
 proc_internals: true
 sort: permission-alpha
 print_creation_date: true
-creation_date: %Y-%m-%d %H:%M %z
-license: gdfl
+creation_date: "%Y-%m-%d %H:%M %z"
+doc_license: gfdl
 max_frontpage_items: 5
 coloured_edges: true
 exclude_dir: ./tests
+---
 
 {!README.md!}

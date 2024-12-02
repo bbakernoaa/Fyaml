@@ -86,4 +86,4 @@ set(CMAKE_Fortran_STANDARD_REQUIRED ON)
 # Add the source files from the src directory
 add_subdirectory(src)
 add_subdirectory(tests)
-# add_subdirectory(example)
+add_subdirectory(example)

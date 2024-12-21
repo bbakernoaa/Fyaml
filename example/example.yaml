@@ -16,8 +16,6 @@ person:
     - SQL
     - Python
   null_value: null
-  alias_test: &anchor_name Jane Doe
-  alias_reference: *anchor_name
   float_value: 3.14159
   int_value: 42
   bool_true: true
@@ -29,6 +27,10 @@ person:
   nested_mapping:
     key1: value1
     key2: value2
+  flow_sequence_integers: [1, 2, 3]
+  flow_sequence_reals: [1.1, 2.2, 3.3]
+  flow_sequence_booleans: [true, false, true]
+  flow_sequence_strings: ["string1", "string2", "string3"]
 ---
 # Second document
 company:
@@ -41,3 +43,4 @@ company:
     - Marketing
   ceo: John Smith
 ...
+ 

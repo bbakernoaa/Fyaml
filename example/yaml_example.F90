@@ -30,6 +30,8 @@ program test_fyaml
     print *, "Age:", val%int_val
 
     val = person%get("skills")
-    print *, "Skills:", val%sequence
+    if (allocated(val%str_sequence)) then
+        print *, "Skills:", val%str_sequence
+    endif
 
 end program test_fyaml
